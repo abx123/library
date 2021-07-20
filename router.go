@@ -24,16 +24,11 @@ func NewRouter(port int, conn *sqlx.DB) *router {
 }
 
 func (router *router) InitRouter() *echo.Echo {
-	// th := handler.NewTableHandler(router.Conn)
-	// gh := handler.NewGuestHandler(router.Conn)
 	handler := handler.NewHandler(router.conn)
 	r := echo.New()
 
 	// Middleware
-	r.Pre(middleware.RequestID())
-	r.Use(middleware.Logger())
-	r.Use(middleware.Recover())
-	r.Use(middleware.Cors())
+	r.Pre(middleware.Middleware())
 
 	p := prometheus.NewPrometheus("library", nil)
 	p.Use(r)
