@@ -29,22 +29,16 @@ type postUpsertBookRequest struct {
 
 type Handler struct {
 	bookSvc services.Ibooks
-	gapiSvc services.Igapi
-	grSvc   services.Igoodread
 	dbSvc   services.IdbService
 }
 
 func NewHandler(conn *sqlx.DB) *Handler {
 	dbRepo := repo.NewDbRepo(conn)
 	dbSvc := services.NewDbService(dbRepo)
-	gapiSvc := services.NewGapiService()
-	grSvc := services.NewGoodreadService()
-	bookSvc := services.NewBookService(gapiSvc, grSvc)
+	bookSvc := services.NewBookService()
 
 	return &Handler{
 		dbSvc:   dbSvc,
-		gapiSvc: gapiSvc,
-		grSvc:   grSvc,
 		bookSvc: bookSvc,
 	}
 }
@@ -63,14 +57,11 @@ func (h *Handler) GetBook(c echo.Context) (err error) {
 
 	// Return ok
 	return c.JSON(http.StatusOK, &presenter.Book{
-		ISBN:            isbn,
-		Title:           data.Title,
-		Author:          data.Author,
-		ImageURL:        data.ImageURL,
-		SmallImageURL:   data.SmallImageURL,
-		PublicationYear: data.PublicationYear,
-		AverageRating:   data.AverageRating,
-		UserID:          data.UserID,
+		ISBN:     isbn,
+		Title:    data.Title,
+		Author:   data.Author,
+		ImageURL: data.ImageURL,
+		UserID: data.UserID,
 	})
 }
 
@@ -92,21 +83,13 @@ func (h *Handler) GetNewBook(c echo.Context) (err error) {
 	}
 
 	// Return ok
-	books := []*presenter.Book{}
-	for _, d := range data {
-		books = append(books, &presenter.Book{
-			ISBN:            d.ISBN,
-			Title:           d.Title,
-			Author:          d.Author,
-			ImageURL:        d.ImageURL,
-			SmallImageURL:   d.SmallImageURL,
-			PublicationYear: d.PublicationYear,
-			AverageRating:   d.AverageRating,
-			UserID:          d.UserID,
-			Status:          d.Status,
-		})
-	}
-	return c.JSON(http.StatusOK, books)
+	return c.JSON(http.StatusOK, &presenter.Book{
+		ISBN:     data.ISBN,
+		Title:    data.Title,
+		Author:   data.Author,
+		ImageURL: data.ImageURL,
+		Status:   1,
+	})
 }
 
 func (h *Handler) ListBook(c echo.Context) (err error) {
@@ -127,15 +110,12 @@ func (h *Handler) ListBook(c echo.Context) (err error) {
 	books := []*presenter.Book{}
 	for _, d := range data {
 		books = append(books, &presenter.Book{
-			ISBN:            d.ISBN,
-			Title:           d.Title,
-			Author:          d.Author,
-			ImageURL:        d.ImageURL,
-			SmallImageURL:   d.SmallImageURL,
-			PublicationYear: d.PublicationYear,
-			AverageRating:   d.AverageRating,
-			UserID:          d.UserID,
-			Status:          d.Status,
+			ISBN:     d.ISBN,
+			Title:    d.Title,
+			Author:   d.Author,
+			ImageURL: d.ImageURL,
+			UserID: d.UserID,
+			Status: d.Status,
 		})
 	}
 
@@ -159,22 +139,19 @@ func (h *Handler) UpsertBook(c echo.Context) (err error) {
 		return c.JSON(http.StatusBadRequest, presenter.ErrResp(reqID, constant.ErrInvalidRequest))
 	}
 
-	book, err := h.dbSvc.Upsert(ctx, isbn, r.Title, r.Author, r.ImageURL, r.SmallImageURL, userId, r.AverageRating, r.PublicationYear, r.Status)
+	book, err := h.dbSvc.Upsert(ctx, isbn, r.Title, r.Author, r.ImageURL, userId, r.Status)
 
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, presenter.ErrResp(reqID, err))
 	}
 
 	return c.JSON(http.StatusOK, &presenter.Book{
-		ISBN:            book.ISBN,
-		Title:           book.Title,
-		Author:          book.Author,
-		ImageURL:        book.ImageURL,
-		SmallImageURL:   book.SmallImageURL,
-		PublicationYear: book.PublicationYear,
-		AverageRating:   book.AverageRating,
-		UserID:          book.UserID,
-		Status:          book.Status,
+		ISBN:     book.ISBN,
+		Title:    book.Title,
+		Author:   book.Author,
+		ImageURL: book.ImageURL,
+		UserID: book.UserID,
+		Status: book.Status,
 	})
 }
 

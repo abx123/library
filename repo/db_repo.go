@@ -64,7 +64,7 @@ func (r *DBRepo) Get(ctx context.Context, book *entities.Book) (*entities.Book, 
 
 func (r *DBRepo) insert(ctx context.Context, book *entities.Book) (*entities.Book, error) {
 	// Execute Statement
-	res, err := r.db.Exec("INSERT INTO `books` (isbn, title, author, imageUrl, smallImageUrl, publicationYear, averageRating, userId) VALUES(?, ?, ?, ?, ?, ?, ?, ?)", book.ISBN, book.Title, book.Author, book.ImageURL, book.SmallImageURL, book.PublicationYear, book.AverageRating, book.UserID)
+	res, err := r.db.Exec("INSERT INTO `books` (isbn, title, author, imageUrl, userId) VALUES(?, ?, ?, ?, ?, ?, ?, ?)", book.ISBN, book.Title, book.Author, book.ImageURL, book.UserID)
 	if err != nil {
 		zap.L().Error(constant.ErrDBErr.Error(), zap.Error(err))
 		// Error paring statement result into struct
@@ -83,7 +83,7 @@ func (r *DBRepo) insert(ctx context.Context, book *entities.Book) (*entities.Boo
 
 func (r *DBRepo) update(ctx context.Context, book *entities.Book) (*entities.Book, error) {
 	// Execute Statement
-	res, err := r.db.Exec("UPDATE `books` SET isbn=?, title=?, author=?, imageUrl=?, smallImageUrl=?, publicationYear=?, averageRating=?, userId=?", book.ISBN, book.Title, book.Author, book.ImageURL, book.SmallImageURL, book.PublicationYear, book.AverageRating, book.UserID)
+	res, err := r.db.Exec("UPDATE `books` SET isbn=?, title=?, author=?, imageUrl=?, userId=?", book.ISBN, book.Title, book.Author, book.ImageURL, book.UserID)
 	if err != nil {
 		zap.L().Error(constant.ErrDBErr.Error(), zap.Error(err))
 		// Error paring statement result into struct
