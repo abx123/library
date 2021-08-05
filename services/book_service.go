@@ -11,16 +11,20 @@ import (
 	"library/entities"
 
 	"github.com/PuerkitoBio/goquery"
+	goisbn "github.com/abx123/go-isbn"
 )
 
 type BookService struct {
+	isbn *goisbn.GoISBN
 }
 
-func NewBookService() *BookService {
-	return &BookService{}
+func NewBookService(gi *goisbn.GoISBN) *BookService {
+	return &BookService{
+		isbn: gi,
+	}
 }
 
-func (svc *BookService) Get(ctx context.Context, isbn string) (*entities.Book, error) {
+func (svc *BookService) crawl(ctx context.Context, isbn string) (*entities.Book, error) {
 	client := &http.Client{}
 	req, _ := http.NewRequest("GET", fmt.Sprintf("https://isbndb.com/book/%s", isbn), nil)
 	req.Header.Set("cookie", "_ga=GA1.2.885462694.1626779278; SESSab6de86aea7caa3f48ba6097cf7cdcf6=EEgG0nrbk7rMaChfagD5rU6GRDSUF4ugoT5iePIMMkk; __stripe_mid=6fbb6b27-b7fc-4fdb-b2c1-7bb5781d032a841978; _gid=GA1.2.1646186259.1626935305; AWSALB=0gdmlLUlv6jOXKTEbbfAx2OQWsho065Xg+dbDxFh2nHgWaZ0bazyJ2+swZKgYOK4/QTRaBM17ITAXLVxWCG6h6JdNVuKIWPxN1tZXo7wdTqixu3akEgRQukgj6CQ; AWSALBCORS=0gdmlLUlv6jOXKTEbbfAx2OQWsho065Xg+dbDxFh2nHgWaZ0bazyJ2+swZKgYOK4/QTRaBM17ITAXLVxWCG6h6JdNVuKIWPxN1tZXo7wdTqixu3akEgRQukgj6CQ")
@@ -49,7 +53,7 @@ func (svc *BookService) Get(ctx context.Context, isbn string) (*entities.Book, e
 			book.Publisher = s.Find("td").Text()
 		}
 		if s.Find("th").Text() == "Authors" {
-			book.Author = strings.TrimSpace(s.Find("td").Text())
+			book.Authors = strings.TrimSpace(s.Find("td").Text())
 		}
 	})
 
@@ -63,5 +67,30 @@ func (svc *BookService) Get(ctx context.Context, isbn string) (*entities.Book, e
 		return nil, constant.ErrBookNotFound
 	}
 
+	book.Source = "isbndb_crawl"
+
 	return book, nil
+}
+
+func (svc *BookService) Get(ctx context.Context, isbn string) (*entities.Book, error) {
+	b, err := svc.isbn.Get(isbn)
+	if err != nil {
+		if err == constant.ErrBookNotFound {
+			b, err := svc.crawl(ctx, isbn)
+			if err != nil {
+				return nil, err
+			}
+			return b, nil
+		}
+		return nil, err
+	}
+
+	return mapBookToEnitiy(b), nil
+}
+
+func mapBookToEnitiy(b *goisbn.Book) *entities.Book {
+
+	return &entities.Book{
+		Title: b.Title,
+	}
 }

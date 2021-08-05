@@ -17,14 +17,22 @@ func NewDbService(r *repo.DBRepo) *DBService {
 	}
 }
 
-func (svc *DBService) Upsert(ctx context.Context, isbn, title, author, imageURL, userId string, status int64) (*entities.Book, error) {
+func (svc *DBService) Upsert(ctx context.Context, isbn, title, authors, imageURL, smallImageURL, publisher, userId, description, categories, language, source string, publicationYear, status, pageCount int64) (*entities.Book, error) {
 	book := &entities.Book{
-		ISBN:     isbn,
-		Title:    title,
-		Author:   author,
-		ImageURL: imageURL,
-		UserID:   userId,
-		Status:   status,
+		ISBN:            isbn,
+		Title:           title,
+		Authors:         authors,
+		ImageURL:        imageURL,
+		SmallImageURL:   smallImageURL,
+		PublicationYear: publicationYear,
+		Publisher:       publisher,
+		UserID:          userId,
+		Status:          status,
+		Description:     description,
+		PageCount:       pageCount,
+		Categories:      categories,
+		Language:        language,
+		Source:          source,
 	}
 	book, err := svc.repo.Upsert(ctx, book)
 	if err != nil {

@@ -27,6 +27,8 @@ services:
     environment:
       - PORT=1323
       - DSN=library:password@tcp(mysql.c8ajbiky1mzj.ap-southeast-1.rds.amazonaws.com:3306)/library
+      - GOODREAD_APIKEY=6qVbqOjnzhHws97M5gYYA
+      - ISBNDB_APIKEY=46384_fe2f7c5150354b92aa708a8e0fa46463
     command: bash -c "go build . && ./library"
     ports:
       - 1323:1323

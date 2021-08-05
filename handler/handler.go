@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"strconv"
 
+	goisbn "github.com/abx123/go-isbn"
 	"github.com/jmoiron/sqlx"
 	"github.com/labstack/echo/v4"
 
@@ -25,6 +26,12 @@ type postUpsertBookRequest struct {
 	PublicationYear int64   `json:"publicationYear" form:"publicationYear"`
 	AverageRating   float64 `json:"averageRating" form:"averageRating"`
 	Status          int64   `json:"status" form:"status"`
+	Publisher       string  `json:"publisher" form:"publisher"`
+	Description     string  `json:"description" form:"description"`
+	Categories      string  `json:"categories" form:"categories"`
+	Language        string  `json:"language" form:"language"`
+	Source          string  `json:"source" form:"source"`
+	PageCount       int64   `json:"pageCount" form:"pageCount"`
 }
 
 type Handler struct {
@@ -35,7 +42,8 @@ type Handler struct {
 func NewHandler(conn *sqlx.DB) *Handler {
 	dbRepo := repo.NewDbRepo(conn)
 	dbSvc := services.NewDbService(dbRepo)
-	bookSvc := services.NewBookService()
+	gi := goisbn.NewGoISBN(goisbn.DEFAULT_PROVIDERS)
+	bookSvc := services.NewBookService(gi)
 
 	return &Handler{
 		dbSvc:   dbSvc,
@@ -59,9 +67,9 @@ func (h *Handler) GetBook(c echo.Context) (err error) {
 	return c.JSON(http.StatusOK, &presenter.Book{
 		ISBN:     isbn,
 		Title:    data.Title,
-		Author:   data.Author,
+		Author:   data.Authors,
 		ImageURL: data.ImageURL,
-		UserID: data.UserID,
+		UserID:   data.UserID,
 	})
 }
 
@@ -86,7 +94,7 @@ func (h *Handler) GetNewBook(c echo.Context) (err error) {
 	return c.JSON(http.StatusOK, &presenter.Book{
 		ISBN:     data.ISBN,
 		Title:    data.Title,
-		Author:   data.Author,
+		Author:   data.Authors,
 		ImageURL: data.ImageURL,
 		Status:   1,
 	})
@@ -112,10 +120,10 @@ func (h *Handler) ListBook(c echo.Context) (err error) {
 		books = append(books, &presenter.Book{
 			ISBN:     d.ISBN,
 			Title:    d.Title,
-			Author:   d.Author,
+			Author:   d.Authors,
 			ImageURL: d.ImageURL,
-			UserID: d.UserID,
-			Status: d.Status,
+			UserID:   d.UserID,
+			Status:   d.Status,
 		})
 	}
 
@@ -138,8 +146,8 @@ func (h *Handler) UpsertBook(c echo.Context) (err error) {
 		zap.L().Error(constant.ErrInvalidRequest.Error(), zap.Error(err))
 		return c.JSON(http.StatusBadRequest, presenter.ErrResp(reqID, constant.ErrInvalidRequest))
 	}
-
-	book, err := h.dbSvc.Upsert(ctx, isbn, r.Title, r.Author, r.ImageURL, userId, r.Status)
+	// Upsert(ctx context.Context, isbn,  title, authors, imageURL, smallImageURL, publisher, userId, description, categories, language, source string, publicationYear, status, pageCount int64) (*entities.Book, error) {
+	book, err := h.dbSvc.Upsert(ctx, isbn, r.Title, r.Author, r.ImageURL, r.SmallImageURL, r.Publisher, userId, r.Description, r.Categories, r.Language, r.Source, r.PublicationYear, r.Status, r.PageCount)
 
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, presenter.ErrResp(reqID, err))
@@ -148,10 +156,10 @@ func (h *Handler) UpsertBook(c echo.Context) (err error) {
 	return c.JSON(http.StatusOK, &presenter.Book{
 		ISBN:     book.ISBN,
 		Title:    book.Title,
-		Author:   book.Author,
+		Author:   book.Authors,
 		ImageURL: book.ImageURL,
-		UserID: book.UserID,
-		Status: book.Status,
+		UserID:   book.UserID,
+		Status:   book.Status,
 	})
 }
 

@@ -56,7 +56,6 @@ func (r *DBRepo) Get(ctx context.Context, book *entities.Book) (*entities.Book, 
 			return nil, constant.ErrBookNotFound
 		}
 		zap.L().Error(constant.ErrDBErr.Error(), zap.Error(err))
-		// Error paring statement result into struct
 		return nil, constant.ErrDBErr
 	}
 	return &b, nil
@@ -64,7 +63,7 @@ func (r *DBRepo) Get(ctx context.Context, book *entities.Book) (*entities.Book, 
 
 func (r *DBRepo) insert(ctx context.Context, book *entities.Book) (*entities.Book, error) {
 	// Execute Statement
-	res, err := r.db.Exec("INSERT INTO `books` (isbn, title, author, imageUrl, userId) VALUES(?, ?, ?, ?, ?, ?, ?, ?)", book.ISBN, book.Title, book.Author, book.ImageURL, book.UserID)
+	res, err := r.db.Exec("INSERT INTO `books` (isbn, title, authors, imageUrl, smallImageUrl, publicationYear, publisher, userId, status, description, pageCount, categories, language, source) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", book.ISBN, book.Title, book.Authors, book.ImageURL, book.SmallImageURL, book.PublicationYear, book.Publisher, book.UserID, book.Status, book.Description, book.PageCount, book.Categories, book.Language, book.Source)
 	if err != nil {
 		zap.L().Error(constant.ErrDBErr.Error(), zap.Error(err))
 		// Error paring statement result into struct
@@ -83,7 +82,7 @@ func (r *DBRepo) insert(ctx context.Context, book *entities.Book) (*entities.Boo
 
 func (r *DBRepo) update(ctx context.Context, book *entities.Book) (*entities.Book, error) {
 	// Execute Statement
-	res, err := r.db.Exec("UPDATE `books` SET isbn=?, title=?, author=?, imageUrl=?, userId=?", book.ISBN, book.Title, book.Author, book.ImageURL, book.UserID)
+	res, err := r.db.Exec("UPDATE `books` SET isbn=?, title=?, authors=?, imageUrl=?, smallImageUrl=?, publicationYear=?, userId=?, status=?, description=?, pageCount=?, categories=?, language=?, source=?", book.ISBN, book.Title, book.Authors, book.ImageURL, book.SmallImageURL, book.PublicationYear, book.UserID, book.Status, book.Description, book.PageCount, book.Categories, book.Language, book.Source)
 	if err != nil {
 		zap.L().Error(constant.ErrDBErr.Error(), zap.Error(err))
 		// Error paring statement result into struct
