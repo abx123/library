@@ -66,11 +66,17 @@ func (h *Handler) GetBook(c echo.Context) (err error) {
 
 	// Return ok
 	return c.JSON(http.StatusOK, &presenter.Book{
-		ISBN:     isbn,
-		Title:    data.Title,
-		Author:   data.Authors,
-		ImageURL: data.ImageURL,
-		UserID:   data.UserID,
+		ISBN:        isbn,
+		Title:       data.Title,
+		Author:      data.Authors,
+		ImageURL:    data.ImageURL,
+		UserID:      data.UserID,
+		Status:      data.Status,
+		Source:      data.Source,
+		Language:    data.Language,
+		PageCount:   data.PageCount,
+		Description: data.Description,
+		Publisher:   data.Publisher,
 	})
 }
 
@@ -110,7 +116,7 @@ func (h *Handler) ListBook(c echo.Context) (err error) {
 	reqID := c.Response().Header().Get(echo.HeaderXRequestID)
 	ctx := context.WithValue(c.Request().Context(), constant.ContextKeyRequestID, c.Response().Header().Get(echo.HeaderXRequestID))
 	limit, offset, err := getLimitAndOffest(c)
-	userId := c.Param("userid")
+	userId := c.Param("userId")
 	if err != nil {
 		zap.L().Error(constant.ErrInvalidRequest.Error(), zap.Error(err))
 		return c.JSON(http.StatusBadRequest, presenter.ErrResp(reqID, err))
