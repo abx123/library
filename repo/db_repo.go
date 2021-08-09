@@ -28,6 +28,15 @@ func (r *DBRepo) Upsert(ctx context.Context, book *entities.Book) (*entities.Boo
 
 	b, err := r.Get(ctx, book)
 	if err != nil {
+		if err == constant.ErrBookNotFound {
+			//insert
+			b, err = r.insert(ctx, book)
+			if err != nil {
+				return nil, err
+			}
+			return b, nil
+		}
+
 		return nil, err
 	}
 
@@ -40,16 +49,11 @@ func (r *DBRepo) Upsert(ctx context.Context, book *entities.Book) (*entities.Boo
 		return b, nil
 	}
 
-	b, err = r.insert(ctx, book)
-	if err != nil {
-		return nil, err
-	}
-
 	return b, nil
 }
 
 func (r *DBRepo) Get(ctx context.Context, book *entities.Book) (*entities.Book, error) {
-	b := entities.Book{}
+	b := &entities.Book{}
 	err := r.db.Get(b, "SELECT * FROM `books` WHERE isbn = ? AND userId = ?", book.ISBN, book.UserID)
 	if err != nil {
 		if err == sql.ErrNoRows {
@@ -58,7 +62,7 @@ func (r *DBRepo) Get(ctx context.Context, book *entities.Book) (*entities.Book, 
 		zap.L().Error(constant.ErrDBErr.Error(), zap.Error(err))
 		return nil, constant.ErrDBErr
 	}
-	return &b, nil
+	return b, nil
 }
 
 func (r *DBRepo) insert(ctx context.Context, book *entities.Book) (*entities.Book, error) {

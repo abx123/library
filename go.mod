@@ -4,7 +4,7 @@ go 1.15
 
 require (
 	github.com/PuerkitoBio/goquery v1.7.1
-	github.com/abx123/go-isbn v0.0.0-20210805091559-f2cccdc19c70
+	github.com/abx123/go-isbn v0.0.0-20210809145203-880e21eff3ad
 	github.com/go-sql-driver/mysql v1.6.0
 	github.com/google/uuid v1.0.0
 	github.com/jmoiron/sqlx v1.3.4

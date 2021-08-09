@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strconv"
 	"strings"
 
 	"library/constant"
@@ -89,8 +90,33 @@ func (svc *BookService) Get(ctx context.Context, isbn string) (*entities.Book, e
 }
 
 func mapBookToEnitiy(b *goisbn.Book) *entities.Book {
+	smallImageURL := b.ImageLinks.SmallImageURL
+	imageURL := b.ImageLinks.ImageURL
+	isbn := b.IndustryIdentifiers.ISBN13
+	if smallImageURL == "" {
+		smallImageURL = b.ImageLinks.ImageURL
+	}
+	if imageURL == "" {
+		imageURL = b.ImageLinks.SmallImageURL
+	}
+	if isbn == "" {
+		isbn = b.IndustryIdentifiers.ISBN
+	}
+	publicationYear, _ := strconv.ParseInt(b.PublishedYear, 10, 64)
 
 	return &entities.Book{
-		Title: b.Title,
+		Title:           b.Title,
+		ISBN:            isbn,
+		Authors:         strings.Join(b.Authors, ", "),
+		ImageURL:        imageURL,
+		SmallImageURL:   smallImageURL,
+		PublicationYear: publicationYear,
+		Publisher:       b.Publisher,
+		Status:          1,
+		Description:     b.Description,
+		PageCount:       b.PageCount,
+		Categories:      strings.Join(b.Categories, ", "),
+		Language:        b.Language,
+		Source:          b.Source,
 	}
 }

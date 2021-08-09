@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS `books` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `isbn` int(15) NOT NULL,
+  `isbn` text NOT NULL,
   `title` varchar(45) NOT NULL,
   `authors` varchar(45) NOT NULL,
   `imageUrl` text,

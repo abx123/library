@@ -12,6 +12,8 @@ github.com/Shopify/toxiproxy v2.1.4+incompatible/go.mod h1:OXgGpZ6Cli1/URJOF1DMx
 github.com/VividCortex/gohistogram v1.0.0/go.mod h1:Pf5mBqqDxYaXu3hDrrU+w6nw50o/4+TcAqDqk/vUH7g=
 github.com/abx123/go-isbn v0.0.0-20210805091559-f2cccdc19c70 h1:rB7CK+Xn3dsOhZUXyQE1FnZwEJoZnlWpSZUMMFE8+Ac=
 github.com/abx123/go-isbn v0.0.0-20210805091559-f2cccdc19c70/go.mod h1:B3sZRMSe6VUpYOoARbmYT8lxMy/piK9FAyutjOREfYg=
+github.com/abx123/go-isbn v0.0.0-20210809145203-880e21eff3ad h1:PjjMrQh1HwnfhS0SYjRbVSMbBMxU0/acKkdQgKsTKIE=
+github.com/abx123/go-isbn v0.0.0-20210809145203-880e21eff3ad/go.mod h1:X+E+TGjE7YP0YgchRz5ve7+FfAMB9cV+/pgPBP3ENSo=
 github.com/afex/hystrix-go v0.0.0-20180502004556-fa1af6a1f4f5/go.mod h1:SkGFH1ia65gfNATL8TAiHDNxPzPdmEL5uirI2Uyuz6c=
 github.com/ajstarks/svgo v0.0.0-20180226025133-644b8db467af/go.mod h1:K08gAheRH3/J6wwsYMMT4xOr94bZjxIelGM0+d/wbFw=
 github.com/alecthomas/template v0.0.0-20160405071501-a0175ee3bccc/go.mod h1:LOuyumcjzFXgccqObfd/Ljyb9UuFJ6TxHnclSeseNhc=
