@@ -19,6 +19,7 @@ import (
 
 type postUpsertBookRequest struct {
 	BookID          int64   `json:"id" form:"id"`
+	ISBN            string  `json:"isbn" form:"isbn"`
 	Title           string  `json:"title" form:"title"`
 	Author          string  `json:"author" form:"author"`
 	ImageURL        string  `json:"imageUrl" form:"imageUrl"`
@@ -138,21 +139,21 @@ func (h *Handler) ListBook(c echo.Context) (err error) {
 func (h *Handler) UpsertBook(c echo.Context) (err error) {
 	r := &postUpsertBookRequest{}
 	userId := c.Param("userId")
-	isbn := c.Param("isbn")
+	// isbn := c.Param("isbn")
 	reqID := c.Response().Header().Get(echo.HeaderXRequestID)
 	ctx := context.WithValue(c.Request().Context(), constant.ContextKeyRequestID, c.Response().Header().Get(echo.HeaderXRequestID))
-	if _, err := strconv.ParseInt(isbn, 10, 64); err != nil {
-		// Invalid request parameter
-		zap.L().Error(constant.ErrInvalidRequest.Error(), zap.Error(err))
-		return c.JSON(http.StatusBadRequest, presenter.ErrResp(reqID, err))
-	}
 	if err = c.Bind(r); err != nil {
 		// Invalid request parameter
 		zap.L().Error(constant.ErrInvalidRequest.Error(), zap.Error(err))
 		return c.JSON(http.StatusBadRequest, presenter.ErrResp(reqID, constant.ErrInvalidRequest))
 	}
+	if _, err := strconv.ParseInt(r.ISBN, 10, 64); err != nil {
+		// Invalid request parameter
+		zap.L().Error(constant.ErrInvalidRequest.Error(), zap.Error(err))
+		return c.JSON(http.StatusBadRequest, presenter.ErrResp(reqID, err))
+	}
 	// Upsert(ctx context.Context, isbn,  title, authors, imageURL, smallImageURL, publisher, userId, description, categories, language, source string, publicationYear, status, pageCount int64) (*entities.Book, error) {
-	book, err := h.dbSvc.Upsert(ctx, isbn, r.Title, r.Author, r.ImageURL, r.SmallImageURL, r.Publisher, userId, r.Description, r.Categories, r.Language, r.Source, r.PublicationYear, r.Status, r.PageCount)
+	book, err := h.dbSvc.Upsert(ctx, r.ISBN, r.Title, r.Author, r.ImageURL, r.SmallImageURL, r.Publisher, userId, r.Description, r.Categories, r.Language, r.Source, r.PublicationYear, r.Status, r.PageCount)
 
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, presenter.ErrResp(reqID, err))

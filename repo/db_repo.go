@@ -39,7 +39,6 @@ func (r *DBRepo) Upsert(ctx context.Context, book *entities.Book) (*entities.Boo
 
 		return nil, err
 	}
-
 	if b.BookID != 0 {
 		// update
 		b, err = r.update(ctx, book)
@@ -86,7 +85,7 @@ func (r *DBRepo) insert(ctx context.Context, book *entities.Book) (*entities.Boo
 
 func (r *DBRepo) update(ctx context.Context, book *entities.Book) (*entities.Book, error) {
 	// Execute Statement
-	res, err := r.db.Exec("UPDATE `books` SET isbn=?, title=?, authors=?, imageUrl=?, smallImageUrl=?, publicationYear=?, userId=?, status=?, description=?, pageCount=?, categories=?, language=?, source=?", book.ISBN, book.Title, book.Authors, book.ImageURL, book.SmallImageURL, book.PublicationYear, book.UserID, book.Status, book.Description, book.PageCount, book.Categories, book.Language, book.Source)
+	res, err := r.db.Exec("UPDATE `books` SET isbn=?, title=?, authors=?, imageUrl=?, smallImageUrl=?, publicationYear=?, userId=?, status=?, description=?, pageCount=?, categories=?, language=?, source=? WHERE isbn = ? AND userId = ?", book.ISBN, book.Title, book.Authors, book.ImageURL, book.SmallImageURL, book.PublicationYear, book.UserID, book.Status, book.Description, book.PageCount, book.Categories, book.Language, book.Source, book.ISBN, book.UserID)
 	if err != nil {
 		zap.L().Error(constant.ErrDBErr.Error(), zap.Error(err))
 		// Error paring statement result into struct

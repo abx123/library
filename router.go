@@ -36,7 +36,7 @@ func (router *router) InitRouter() *echo.Echo {
 	r.GET("/ping", handler.Ping)
 	r.GET("/:userId/book/:isbn", handler.GetBook)
 	r.GET("/:userId/books", handler.ListBook)
-	r.POST("/:userId/book/:isbn", handler.UpsertBook)
+	r.POST("/:userId/book", handler.UpsertBook)
 	r.GET("/book/:isbn", handler.GetNewBook)
 
 	r.Start(fmt.Sprintf(":%d", router.port))
