@@ -3,45 +3,51 @@ package services
 import (
 	"context"
 	"fmt"
-	"log"
 	"net/http"
 	"strconv"
 	"strings"
+	"time"
 
 	"library/constant"
 	"library/entities"
 
 	"github.com/PuerkitoBio/goquery"
 	goisbn "github.com/abx123/go-isbn"
+	"go.uber.org/zap"
+)
+
+const (
+	timeout   = 3 * time.Second
+	methodGet = "GET"
 )
 
 type BookService struct {
-	isbn *goisbn.GoISBN
+	isbn   goisbn.Queryer
+	client httpClient
 }
 
-func NewBookService(gi *goisbn.GoISBN) *BookService {
+func NewBookService(gi goisbn.Queryer) *BookService {
 	return &BookService{
-		isbn: gi,
+		isbn:   gi,
+		client: &http.Client{Timeout: timeout},
 	}
 }
 
 func (svc *BookService) crawl(ctx context.Context, isbn string) (*entities.Book, error) {
-	client := &http.Client{}
-	req, _ := http.NewRequest("GET", fmt.Sprintf("https://isbndb.com/book/%s", isbn), nil)
+	req, _ := http.NewRequest(methodGet, fmt.Sprintf("https://isbndb.com/book/%s", isbn), nil)
 	req.Header.Set("cookie", "_ga=GA1.2.885462694.1626779278; SESSab6de86aea7caa3f48ba6097cf7cdcf6=EEgG0nrbk7rMaChfagD5rU6GRDSUF4ugoT5iePIMMkk; __stripe_mid=6fbb6b27-b7fc-4fdb-b2c1-7bb5781d032a841978; _gid=GA1.2.1646186259.1626935305; AWSALB=0gdmlLUlv6jOXKTEbbfAx2OQWsho065Xg+dbDxFh2nHgWaZ0bazyJ2+swZKgYOK4/QTRaBM17ITAXLVxWCG6h6JdNVuKIWPxN1tZXo7wdTqixu3akEgRQukgj6CQ; AWSALBCORS=0gdmlLUlv6jOXKTEbbfAx2OQWsho065Xg+dbDxFh2nHgWaZ0bazyJ2+swZKgYOK4/QTRaBM17ITAXLVxWCG6h6JdNVuKIWPxN1tZXo7wdTqixu3akEgRQukgj6CQ")
-	res, err := client.Do(req)
+	res, err := svc.client.Do(req)
 
 	if err != nil {
-		log.Fatal(err)
+		zap.L().Error(constant.ErrRetrievingBookDetails.Error(), zap.Error(err))
+		return nil, constant.ErrRetrievingBookDetails
 	}
 	defer res.Body.Close()
-	if res.StatusCode != 200 {
-		log.Fatalf("status code error: %d %s", res.StatusCode, res.Status)
+	if res.StatusCode < 200 || res.StatusCode > 299 {
+		zap.L().Error(constant.ErrRetrievingBookDetails.Error(), zap.Error(err))
+		return nil, constant.ErrRetrievingBookDetails
 	}
-	doc, err := goquery.NewDocumentFromReader(res.Body)
-	if err != nil {
-		log.Fatal(err)
-	}
+	doc, _ := goquery.NewDocumentFromReader(res.Body)
 	book := &entities.Book{}
 	doc.Find("body div table tr").Each(func(i int, s *goquery.Selection) {
 		if s.Find("th").Text() == "Full Title" {
@@ -63,12 +69,11 @@ func (svc *BookService) crawl(ctx context.Context, isbn string) (*entities.Book,
 			book.ImageURL = img
 		}
 	})
-
 	if book.Title == "" {
 		return nil, constant.ErrBookNotFound
 	}
-
 	book.Source = "isbndb_crawl"
+	book.Status = 1
 
 	return book, nil
 }
@@ -83,7 +88,6 @@ func (svc *BookService) Get(ctx context.Context, isbn string) (*entities.Book, e
 			}
 			return b, nil
 		}
-		return nil, err
 	}
 
 	return mapBookToEnitiy(b), nil

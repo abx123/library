@@ -2,6 +2,7 @@ package services
 
 import (
 	"context"
+	"net/http"
 
 	"library/entities"
 )
@@ -14,4 +15,8 @@ type IdbService interface {
 
 type Ibooks interface {
 	Get(context.Context, string) (*entities.Book, error)
+}
+
+type httpClient interface {
+	Do(req *http.Request) (*http.Response, error)
 }

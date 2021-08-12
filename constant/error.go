@@ -12,4 +12,6 @@ var (
 	ErrGapiError = errors.New("google api return error")
 
 	ErrGoodreadError = errors.New("goodread api return error")
+
+	ErrRetrievingBookDetails = errors.New("error retrieving book details")
 )
