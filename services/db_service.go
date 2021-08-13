@@ -11,7 +11,7 @@ type DBService struct {
 	repo repo.IdbRepo
 }
 
-func NewDbService(r *repo.DBRepo) *DBService {
+func NewDbService(r repo.IdbRepo) *DBService {
 	return &DBService{
 		repo: r,
 	}

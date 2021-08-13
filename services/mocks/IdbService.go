@@ -60,13 +60,13 @@ func (_m *IdbService) List(_a0 context.Context, _a1 int64, _a2 int64, _a3 string
 	return r0, r1
 }
 
-// Upsert provides a mock function with given fields: _a0, _a1, _a2, _a3, _a4, _a5, _a6, _a7, _a8, _a9
-func (_m *IdbService) Upsert(_a0 context.Context, _a1 string, _a2 string, _a3 string, _a4 string, _a5 string, _a6 string, _a7 float64, _a8 int64, _a9 int64) (*entities.Book, error) {
-	ret := _m.Called(_a0, _a1, _a2, _a3, _a4, _a5, _a6, _a7, _a8, _a9)
+// Upsert provides a mock function with given fields: _a0, _a1, _a2, _a3, _a4, _a5, _a6, _a7, _a8, _a9, _a10, _a11, _a12, _a13, _a14
+func (_m *IdbService) Upsert(_a0 context.Context, _a1 string, _a2 string, _a3 string, _a4 string, _a5 string, _a6 string, _a7 string, _a8 string, _a9 string, _a10 string, _a11 string, _a12 int64, _a13 int64, _a14 int64) (*entities.Book, error) {
+	ret := _m.Called(_a0, _a1, _a2, _a3, _a4, _a5, _a6, _a7, _a8, _a9, _a10, _a11, _a12, _a13, _a14)
 
 	var r0 *entities.Book
-	if rf, ok := ret.Get(0).(func(context.Context, string, string, string, string, string, string, float64, int64, int64) *entities.Book); ok {
-		r0 = rf(_a0, _a1, _a2, _a3, _a4, _a5, _a6, _a7, _a8, _a9)
+	if rf, ok := ret.Get(0).(func(context.Context, string, string, string, string, string, string, string, string, string, string, string, int64, int64, int64) *entities.Book); ok {
+		r0 = rf(_a0, _a1, _a2, _a3, _a4, _a5, _a6, _a7, _a8, _a9, _a10, _a11, _a12, _a13, _a14)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(*entities.Book)
@@ -74,8 +74,8 @@ func (_m *IdbService) Upsert(_a0 context.Context, _a1 string, _a2 string, _a3 st
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(context.Context, string, string, string, string, string, string, float64, int64, int64) error); ok {
-		r1 = rf(_a0, _a1, _a2, _a3, _a4, _a5, _a6, _a7, _a8, _a9)
+	if rf, ok := ret.Get(1).(func(context.Context, string, string, string, string, string, string, string, string, string, string, string, int64, int64, int64) error); ok {
+		r1 = rf(_a0, _a1, _a2, _a3, _a4, _a5, _a6, _a7, _a8, _a9, _a10, _a11, _a12, _a13, _a14)
 	} else {
 		r1 = ret.Error(1)
 	}

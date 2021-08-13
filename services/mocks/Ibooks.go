@@ -15,15 +15,15 @@ type Ibooks struct {
 }
 
 // Get provides a mock function with given fields: _a0, _a1
-func (_m *Ibooks) Get(_a0 context.Context, _a1 string) ([]*entities.Book, error) {
+func (_m *Ibooks) Get(_a0 context.Context, _a1 string) (*entities.Book, error) {
 	ret := _m.Called(_a0, _a1)
 
-	var r0 []*entities.Book
-	if rf, ok := ret.Get(0).(func(context.Context, string) []*entities.Book); ok {
+	var r0 *entities.Book
+	if rf, ok := ret.Get(0).(func(context.Context, string) *entities.Book); ok {
 		r0 = rf(_a0, _a1)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).([]*entities.Book)
+			r0 = ret.Get(0).(*entities.Book)
 		}
 	}
 
