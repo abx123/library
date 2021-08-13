@@ -61,7 +61,7 @@ func (h *Handler) GetBook(c echo.Context) (err error) {
 	data, err := h.dbSvc.Get(ctx, isbn, userId)
 	if err != nil {
 		zap.L().Error(err.Error(), zap.Error(err))
-		return c.JSON(http.StatusBadRequest, presenter.ErrResp(reqID, err))
+		return c.JSON(http.StatusInternalServerError, presenter.ErrResp(reqID, err))
 	}
 
 	// Return ok
@@ -94,7 +94,7 @@ func (h *Handler) GetNewBook(c echo.Context) (err error) {
 	data, err := h.bookSvc.Get(ctx, isbn)
 	if err != nil {
 		zap.L().Error(err.Error(), zap.Error(err))
-		return c.JSON(http.StatusBadRequest, presenter.ErrResp(reqID, err))
+		return c.JSON(http.StatusInternalServerError, presenter.ErrResp(reqID, err))
 	}
 
 	// Return ok
@@ -158,7 +158,6 @@ func (h *Handler) UpsertBook(c echo.Context) (err error) {
 		zap.L().Error(constant.ErrInvalidRequest.Error(), zap.Error(err))
 		return c.JSON(http.StatusBadRequest, presenter.ErrResp(reqID, err))
 	}
-	// Upsert(ctx context.Context, isbn,  title, authors, imageURL, smallImageURL, publisher, userId, description, categories, language, source string, publicationYear, status, pageCount int64) (*entities.Book, error) {
 	book, err := h.dbSvc.Upsert(ctx, r.ISBN, r.Title, r.Author, r.ImageURL, r.SmallImageURL, r.Publisher, userId, r.Description, r.Categories, r.Language, r.Source, r.PublicationYear, r.Status, r.PageCount)
 
 	if err != nil {

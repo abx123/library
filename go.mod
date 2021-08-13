@@ -11,6 +11,6 @@ require (
 	github.com/labstack/echo-contrib v0.11.0
 	github.com/labstack/echo/v4 v4.4.0
 	github.com/stretchr/testify v1.7.0
-	github.com/zhashkevych/go-sqlxmock v1.5.1 // indirect
+	github.com/zhashkevych/go-sqlxmock v1.5.1
 	go.uber.org/zap v1.18.1
 )

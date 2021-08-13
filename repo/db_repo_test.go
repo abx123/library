@@ -144,25 +144,25 @@ func TestUpdate(t *testing.T) {
 	}
 	testCases := []testCase{
 		{
-			name:   "Happy Case",
-			desc:   "all ok",
+			name: "Happy Case",
+			desc: "all ok",
 			expRes: &entities.Book{
-				ISBN: "9780751562774",
+				ISBN:   "9780751562774",
 				UserID: "8BeqLfieIiTOkruBBrQ6p8jOTsk2",
 			},
 		},
 		{
-			name: "Sad Case",
-			desc: "db returns error",
-			err: fmt.Errorf("db returns error"),
+			name:   "Sad Case",
+			desc:   "db returns error",
+			err:    fmt.Errorf("db returns error"),
 			expErr: constant.ErrDBErr,
-			dbErr: true,
+			dbErr:  true,
 		},
 		{
-			name: "Sad Case",
-			desc: "rows affected returns error",
-			err: fmt.Errorf("db returns error"),
-			expErr: constant.ErrDBErr,
+			name:            "Sad Case",
+			desc:            "rows affected returns error",
+			err:             fmt.Errorf("db returns error"),
+			expErr:          constant.ErrDBErr,
 			rowsAffectedErr: true,
 		},
 	}
@@ -182,15 +182,15 @@ func TestUpdate(t *testing.T) {
 	}
 }
 
-func TestList(t *testing.T){
+func TestList(t *testing.T) {
 	query := regexp.QuoteMeta("SELECT * FROM `books` WHERE userId=?  LIMIT ? OFFSET ?")
 	row := sqlxmock.NewRows([]string{"id", "isbn", "title", "authors", "imageUrl", "smallImageUrl", "publicationYear", "publisher", "userId", "status", "description", "pageCount", "categories", "language", "source"}).AddRow(1, "9780751562774", "The Secrets She Keeps", "Michael Robotham", "https://s.gr-assets.com/assets/nophoto/book/111x148-bcc042a9c91a29c1d680899eff700a03.png", "", 0, "BB Publishing House", "8BeqLfieIiTOkruBBrQ6p8jOTsk2", 1, "", 0, "", "", "goodreads").AddRow(2, "9781407243207", "The Bourne Ultimatum", "", "https://images.isbndb.com/covers/32/07/9781407243207.jpg", "", 0, "BB Publishing House", "8BeqLfieIiTOkruBBrQ6p8jOTsk2", 1, "", 0, "", "en_US", "isbndb")
-	type testCase struct{
-		name string
-		desc string
+	type testCase struct {
+		name   string
+		desc   string
 		expRes []*entities.Book
 		expErr error
-		err error
+		err    error
 	}
 	testCases := []testCase{
 		{
@@ -216,33 +216,33 @@ func TestList(t *testing.T){
 					Publisher: "BB Publishing House",
 					UserID:    "8BeqLfieIiTOkruBBrQ6p8jOTsk2",
 					Status:    1,
-					Language: "en_US",
+					Language:  "en_US",
 					Source:    "isbndb",
 				},
 			},
 		},
 		{
-			name: "Sad Case",
-			desc: "db returns empty row",
-			err: sql.ErrNoRows,
+			name:   "Sad Case",
+			desc:   "db returns empty row",
+			err:    sql.ErrNoRows,
 			expErr: constant.ErrBookNotFound,
 		},
 		{
-			name: "Sad Case",
-			desc: "db returns error",
-			err: fmt.Errorf("mock error"),
+			name:   "Sad Case",
+			desc:   "db returns error",
+			err:    fmt.Errorf("mock error"),
 			expErr: constant.ErrDBErr,
 		},
 	}
-	for _, v := range testCases{
+	for _, v := range testCases {
 		db, mock := NewMockDb()
 		repo := NewDbRepo(db)
 		if v.err != nil {
 			mock.ExpectQuery(query).WillReturnError(v.err)
 		}
-			mock.ExpectQuery(query).WillReturnRows(row)
+		mock.ExpectQuery(query).WillReturnRows(row)
 
-		actRes, actErr := repo.List(context.Background(),10, 0, "8BeqLfieIiTOkruBBrQ6p8jOTsk2")
+		actRes, actErr := repo.List(context.Background(), 10, 0, "8BeqLfieIiTOkruBBrQ6p8jOTsk2")
 		assert.Equal(t, v.expRes, actRes)
 		assert.Equal(t, v.expErr, actErr)
 	}
@@ -263,14 +263,14 @@ func TestUpsert(t *testing.T) {
 		getErr    bool
 		insertErr bool
 		insert    bool
-		update bool
+		update    bool
 	}
 	testCases := []testCase{
 		{
 			name: "Happy Case",
 			desc: "update",
 			expRes: &entities.Book{
-				ISBN: "9780751562774",
+				ISBN:   "9780751562774",
 				UserID: "8BeqLfieIiTOkruBBrQ6p8jOTsk2",
 			},
 			update: true,
@@ -288,28 +288,28 @@ func TestUpsert(t *testing.T) {
 			insert: true,
 		},
 		{
-			name: "Sad Case",
-			desc: "insert returns error",
-			err: sql.ErrNoRows,
-			getErr: true,
-			insert: true,
+			name:      "Sad Case",
+			desc:      "insert returns error",
+			err:       sql.ErrNoRows,
+			getErr:    true,
+			insert:    true,
 			insertErr: true,
-			expErr: constant.ErrDBErr,
+			expErr:    constant.ErrDBErr,
 		},
 		{
-			name: "Sad Case",
-			desc: "get returns error",
-			err: fmt.Errorf("mock get error"),
+			name:   "Sad Case",
+			desc:   "get returns error",
+			err:    fmt.Errorf("mock get error"),
 			getErr: true,
 			expErr: constant.ErrDBErr,
 		},
 		{
-			name: "Sad Case",
-			desc: "Update returns error",
-			err: fmt.Errorf("update returns error"),
+			name:      "Sad Case",
+			desc:      "Update returns error",
+			err:       fmt.Errorf("update returns error"),
 			updateErr: true,
-			expErr: constant.ErrDBErr,
-			update: true,
+			expErr:    constant.ErrDBErr,
+			update:    true,
 		},
 	}
 	for _, v := range testCases {
@@ -321,7 +321,7 @@ func TestUpsert(t *testing.T) {
 		} else {
 			mock.ExpectQuery(getQuery).WillReturnRows(getRows)
 		}
-		if v.update{
+		if v.update {
 			if v.updateErr {
 				mock.ExpectExec(updateQuery).WillReturnError(v.err)
 			} else {
@@ -332,10 +332,10 @@ func TestUpsert(t *testing.T) {
 		if v.insert {
 			if v.insertErr {
 				mock.ExpectExec(insertQuery).WillReturnError(fmt.Errorf("mock insert error"))
-			} else{
-			mock.ExpectExec(insertQuery).WillReturnResult(sqlxmock.NewResult(99, 1))
+			} else {
+				mock.ExpectExec(insertQuery).WillReturnResult(sqlxmock.NewResult(99, 1))
 			}
-		} 
+		}
 
 		actRes, actErr := repo.Upsert(context.Background(), &entities.Book{ISBN: "9780751562774", UserID: "8BeqLfieIiTOkruBBrQ6p8jOTsk2"})
 
