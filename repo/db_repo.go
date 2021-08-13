@@ -55,10 +55,11 @@ func (r *DBRepo) Get(ctx context.Context, book *entities.Book) (*entities.Book, 
 	b := &entities.Book{}
 	err := r.db.Get(b, "SELECT * FROM `books` WHERE isbn = ? AND userId = ?", book.ISBN, book.UserID)
 	if err != nil {
-		if err == sql.ErrNoRows {
+		zap.L().Error(constant.ErrDBErr.Error(), zap.Error(err))
+		if errors.Is(err, sql.ErrNoRows) {
 			return nil, constant.ErrBookNotFound
 		}
-		zap.L().Error(constant.ErrDBErr.Error(), zap.Error(err))
+
 		return nil, constant.ErrDBErr
 	}
 	return b, nil
@@ -97,7 +98,6 @@ func (r *DBRepo) update(ctx context.Context, book *entities.Book) (*entities.Boo
 		// Error getting ID of newly created record
 		return nil, constant.ErrDBErr
 	}
-
 	return book, nil
 }
 
