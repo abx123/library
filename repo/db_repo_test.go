@@ -270,6 +270,7 @@ func TestUpsert(t *testing.T) {
 			name: "Happy Case",
 			desc: "update",
 			expRes: &entities.Book{
+				BookID: 1,
 				ISBN:   "9780751562774",
 				UserID: "8BeqLfieIiTOkruBBrQ6p8jOTsk2",
 			},

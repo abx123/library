@@ -39,15 +39,12 @@ func (r *DBRepo) Upsert(ctx context.Context, book *entities.Book) (*entities.Boo
 
 		return nil, err
 	}
-	if b.BookID != 0 {
-		// update
-		b, err = r.update(ctx, book)
-		if err != nil {
-			return nil, err
-		}
-		return b, nil
+	book.BookID = b.BookID
+	// update
+	b, err = r.update(ctx, book)
+	if err != nil {
+		return nil, err
 	}
-
 	return b, nil
 }
 

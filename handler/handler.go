@@ -5,15 +5,12 @@ import (
 	"net/http"
 	"strconv"
 
-	goisbn "github.com/abx123/go-isbn"
-	"github.com/jmoiron/sqlx"
 	"github.com/labstack/echo/v4"
 
 	"go.uber.org/zap"
 
 	"library/constant"
 	"library/handler/presenter"
-	"library/repo"
 	"library/services"
 )
 
@@ -40,15 +37,10 @@ type Handler struct {
 	dbSvc   services.IdbService
 }
 
-func NewHandler(conn *sqlx.DB) *Handler {
-	dbRepo := repo.NewDbRepo(conn)
-	dbSvc := services.NewDbService(dbRepo)
-	gi := goisbn.NewGoISBN(goisbn.DEFAULT_PROVIDERS)
-	bookSvc := services.NewBookService(gi)
-
+func NewHandler(dbSvc services.IdbService, bSvc services.Ibooks) *Handler {
 	return &Handler{
 		dbSvc:   dbSvc,
-		bookSvc: bookSvc,
+		bookSvc: bSvc,
 	}
 }
 

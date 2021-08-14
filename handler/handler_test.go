@@ -49,11 +49,7 @@ func TestGetBook(t *testing.T) {
 
 		dbSvc := mocks.IdbService{}
 		bSvc := mocks.Ibooks{}
-		h := Handler{
-			bookSvc: &bSvc,
-			dbSvc:   &dbSvc,
-		}
-
+		h := NewHandler(&dbSvc, &bSvc)
 		dbSvc.On("Get", context.WithValue(context.Background(), constant.ContextKeyRequestID, ""), "9780751562774", "8BeqLfieIiTOkruBBrQ6p8jOTsk2").Return(v.expRes, v.err)
 		req := httptest.NewRequest(http.MethodGet, v.url, nil)
 		w := httptest.NewRecorder()
@@ -101,10 +97,7 @@ func TestGetNewBook(t *testing.T) {
 	for _, v := range testCases {
 		dbSvc := mocks.IdbService{}
 		bSvc := mocks.Ibooks{}
-		h := Handler{
-			bookSvc: &bSvc,
-			dbSvc:   &dbSvc,
-		}
+		h := NewHandler(&dbSvc, &bSvc)
 		bSvc.On("Get", context.WithValue(context.Background(), constant.ContextKeyRequestID, ""), "9780751562774").Return(v.expRes, v.err)
 		req := httptest.NewRequest(http.MethodGet, v.url, nil)
 		w := httptest.NewRecorder()
@@ -162,10 +155,7 @@ func TestListBook(t *testing.T) {
 	for _, v := range testCases {
 		dbSvc := mocks.IdbService{}
 		bSvc := mocks.Ibooks{}
-		h := Handler{
-			bookSvc: &bSvc,
-			dbSvc:   &dbSvc,
-		}
+		h := NewHandler(&dbSvc, &bSvc)
 		dbSvc.On("List", context.WithValue(context.Background(), constant.ContextKeyRequestID, ""), int64(10), int64(0), "8BeqLfieIiTOkruBBrQ6p8jOTsk2").Return(v.expRes, v.err)
 		req := httptest.NewRequest(http.MethodGet, v.url, nil)
 		w := httptest.NewRecorder()
@@ -252,10 +242,7 @@ func TestUpsert(t *testing.T) {
 	for _, v := range testCases {
 		dbSvc := mocks.IdbService{}
 		bSvc := mocks.Ibooks{}
-		h := Handler{
-			bookSvc: &bSvc,
-			dbSvc:   &dbSvc,
-		}
+		h := NewHandler(&dbSvc, &bSvc)
 		dbSvc.On("Upsert", context.WithValue(context.Background(), constant.ContextKeyRequestID, ""), "9780751562774", "The Secrets She Keeps", "Michael Robotham", "https://s.gr-assets.com/assets/nophoto/book/111x148-bcc042a9c91a29c1d680899eff700a03.png", "", "", "8BeqLfieIiTOkruBBrQ6p8jOTsk2", "", "", "", "goodreads", int64(0), int64(1), int64(0)).Return(v.expRes, v.err)
 		req := httptest.NewRequest(http.MethodPost, "http://localhost:1323/8BeqLfieIiTOkruBBrQ6p8jOTsk2/book", strings.NewReader(v.form.Encode()))
 		req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
@@ -270,10 +257,7 @@ func TestUpsert(t *testing.T) {
 func TestPing(t *testing.T) {
 	dbSvc := mocks.IdbService{}
 	bSvc := mocks.Ibooks{}
-	h := Handler{
-		bookSvc: &bSvc,
-		dbSvc:   &dbSvc,
-	}
+	h := NewHandler(&dbSvc, &bSvc)
 	req := httptest.NewRequest(http.MethodGet, "http://localhost:1323/ping", nil)
 	w := httptest.NewRecorder()
 	r := echo.New()

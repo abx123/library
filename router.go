@@ -3,12 +3,15 @@ package main
 import (
 	"fmt"
 
+	goisbn "github.com/abx123/go-isbn"
 	"github.com/jmoiron/sqlx"
 	"github.com/labstack/echo-contrib/prometheus"
 	"github.com/labstack/echo/v4"
 
 	"library/handler"
 	"library/handler/middleware"
+	"library/repo"
+	"library/services"
 )
 
 type router struct {
@@ -24,7 +27,10 @@ func NewRouter(port int, conn *sqlx.DB) *router {
 }
 
 func (router *router) InitRouter() *echo.Echo {
-	handler := handler.NewHandler(router.conn)
+
+	dbRepo := repo.NewDbRepo(router.conn)
+	gi := goisbn.NewGoISBN(goisbn.DEFAULT_PROVIDERS)
+	handler := handler.NewHandler(services.NewDbService(dbRepo), services.NewBookService(gi))
 	r := echo.New()
 
 	// Middleware
