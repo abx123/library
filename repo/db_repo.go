@@ -9,8 +9,8 @@ import (
 
 	"go.uber.org/zap"
 
-	"library/constant"
-	"library/entities"
+	"github.com/abx123/library/constant"
+	"github.com/abx123/library/entities"
 )
 
 type DBRepo struct {

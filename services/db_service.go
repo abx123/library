@@ -3,8 +3,8 @@ package services
 import (
 	"context"
 
-	"library/entities"
-	"library/repo"
+	"github.com/abx123/library/entities"
+	"github.com/abx123/library/repo"
 )
 
 type DBService struct {

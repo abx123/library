@@ -3,9 +3,6 @@ package handler
 import (
 	"context"
 	"fmt"
-	"library/constant"
-	"library/entities"
-	"library/services/mocks"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
@@ -14,6 +11,10 @@ import (
 
 	"github.com/labstack/echo/v4"
 	"github.com/stretchr/testify/assert"
+
+	"github.com/abx123/library/constant"
+	"github.com/abx123/library/entities"
+	"github.com/abx123/library/services/mocks"
 )
 
 func TestGetBook(t *testing.T) {

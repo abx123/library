@@ -11,7 +11,7 @@ import (
 
 	"go.uber.org/zap"
 
-	"library/logger"
+	"github.com/abx123/library/logger"
 )
 
 func main() {

@@ -4,7 +4,7 @@ import (
 	"context"
 	"net/http"
 
-	"library/entities"
+	"github.com/abx123/library/entities"
 )
 
 type IdbService interface {

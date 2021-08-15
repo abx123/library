@@ -4,8 +4,6 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
-	"library/constant"
-	"library/entities"
 	"log"
 	"regexp"
 	"testing"
@@ -13,6 +11,9 @@ import (
 	"github.com/jmoiron/sqlx"
 	"github.com/stretchr/testify/assert"
 	sqlxmock "github.com/zhashkevych/go-sqlxmock"
+
+	"github.com/abx123/library/constant"
+	"github.com/abx123/library/entities"
 )
 
 func NewMockDb() (*sqlx.DB, sqlxmock.Sqlmock) {

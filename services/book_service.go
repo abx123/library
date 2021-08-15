@@ -8,12 +8,12 @@ import (
 	"strings"
 	"time"
 
-	"library/constant"
-	"library/entities"
-
 	"github.com/PuerkitoBio/goquery"
 	goisbn "github.com/abx123/go-isbn"
 	"go.uber.org/zap"
+
+	"github.com/abx123/library/constant"
+	"github.com/abx123/library/entities"
 )
 
 const (

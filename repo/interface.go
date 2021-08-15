@@ -3,7 +3,7 @@ package repo
 import (
 	"context"
 
-	"library/entities"
+	"github.com/abx123/library/entities"
 )
 
 type IdbRepo interface {

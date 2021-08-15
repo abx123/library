@@ -9,9 +9,9 @@ import (
 
 	"go.uber.org/zap"
 
-	"library/constant"
-	"library/handler/presenter"
-	"library/services"
+	"github.com/abx123/library/constant"
+	"github.com/abx123/library/handler/presenter"
+	"github.com/abx123/library/services"
 )
 
 type postUpsertBookRequest struct {

@@ -1,4 +1,4 @@
-module library
+module github.com/abx123/library
 
 go 1.15
 

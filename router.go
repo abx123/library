@@ -8,10 +8,10 @@ import (
 	"github.com/labstack/echo-contrib/prometheus"
 	"github.com/labstack/echo/v4"
 
-	"library/handler"
-	"library/handler/middleware"
-	"library/repo"
-	"library/services"
+	"github.com/abx123/library/handler"
+	"github.com/abx123/library/handler/middleware"
+	"github.com/abx123/library/repo"
+	"github.com/abx123/library/services"
 )
 
 type router struct {
