@@ -1,5 +1,6 @@
 package presenter
 
+// Book defines book object
 type Book struct {
 	ISBN            string `json:"isbn,omitempty"`
 	Title           string `json:"title,omitempty"`

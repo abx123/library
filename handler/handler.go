@@ -31,13 +31,13 @@ type postUpsertBookRequest struct {
 	PageCount       int64   `json:"pageCount" form:"pageCount"`
 }
 
-// Hanlder defines a handler struct
+// Handler defines a handler struct
 type Handler struct {
 	bookSvc services.Ibooks
 	dbSvc   services.IdbService
 }
 
-// New Handler returns a new instance of Handler
+// NewHandler returns a new instance of Handler
 func NewHandler(dbSvc services.IdbService, bSvc services.Ibooks) *Handler {
 	return &Handler{
 		dbSvc:   dbSvc,

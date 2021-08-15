@@ -12,7 +12,7 @@ type DBService struct {
 	repo repo.IdbRepo
 }
 
-// NewDBService creates a new instance of DBService
+// NewDbService creates a new instance of DBService
 func NewDbService(r repo.IdbRepo) *DBService {
 	return &DBService{
 		repo: r,
