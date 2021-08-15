@@ -4,7 +4,7 @@ package mocks
 
 import (
 	context "context"
-	entities "library/entities"
+	entities "github.com/abx123/library/entities"
 
 	mock "github.com/stretchr/testify/mock"
 )
