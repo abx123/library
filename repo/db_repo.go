@@ -18,7 +18,7 @@ type DBRepo struct {
 	db *sqlx.DB
 }
 
-// NewDBRepo creates a new instance of DBRepo object
+// NewDbRepo creates a new instance of DBRepo object
 func NewDbRepo(db *sqlx.DB) *DBRepo {
 	return &DBRepo{
 		db: db,
