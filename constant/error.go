@@ -3,15 +3,15 @@ package constant
 import "errors"
 
 var (
+	// ErrDBErr ...
 	ErrDBErr = errors.New("database returns error")
 
+	// ErrBookNotFound ...
 	ErrBookNotFound = errors.New("book not found")
 
+	// ErrInvalidRequest ...
 	ErrInvalidRequest = errors.New("invalid request parameter")
 
-	ErrGapiError = errors.New("google api return error")
-
-	ErrGoodreadError = errors.New("goodread api return error")
-
+	// ErrRetrievingBookDetails ...
 	ErrRetrievingBookDetails = errors.New("error retrieving book details")
 )

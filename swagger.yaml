@@ -1,0 +1,337 @@
+---
+swagger: "2.0"
+info:
+  description: Simple REST API to keep track of my books
+  version: 1.0.0
+  title: Library API
+  contact:
+    email: wmsam91@gmail.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+host: api.wmsam.dev
+basePath: /
+tags:
+  - name: Book
+    description: API to return details of a single book
+  - name: Library
+    description: API to get/update book status from library
+  - name: Healthcheck
+    description: Healthcheck endpoint
+schemes:
+  - https
+paths:
+  /ping:
+    get:
+      tags:
+        - Healthcheck
+      summary: Returns current state of API
+      produces:
+        - application/json
+      responses:
+        200:
+          description: successful operation
+          schema:
+            $ref: "#/definitions/HealthcheckResponse"
+  /library/{userID}/book/{isbn}:
+    get:
+      tags:
+        - Library
+      summary: Get single book status from library
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: userID
+          in: path
+          description: user identification string
+          required: true
+          type: string
+        - name: isbn
+          in: path
+          description: id string of book
+          required: true
+          type: string
+      responses:
+        200:
+          description: successful operation
+          schema:
+            $ref: "#/definitions/GetBookResponse"
+        500:
+          description: internal server error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+
+  /library/{userID}/books:
+    get:
+      tags:
+        - Library
+      summary: Get list of books from library under the same userID
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: userID
+          in: path
+          description: user identification string
+          required: true
+          type: string
+      responses:
+        200:
+          description: successful operation
+          schema:
+            $ref: "#/definitions/ListBookResponse"
+        500:
+          description: internal server error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+
+  /library/{userID}/book:
+    post:
+      tags:
+        - Library
+      summary: Updates the book record if exists, creates a new record of said book if record does not exist in library
+      consumes:
+        - application/x-www-form-urlencoded
+      produces:
+        - application/json
+      parameters:
+        - name: userID
+          in: path
+          description: user identification string
+          required: true
+          type: string
+        - name: isbn
+          in: formData
+          description: isbn string of the book
+          required: true
+          type: string
+        - name: title
+          in: formData
+          description: title of the book
+          required: true
+          type: string
+        - name: author
+          in: formData
+          description: author of the book
+          required: true
+          type: string
+        - name: imageUrl
+          in: formData
+          description: image url string of the book
+          required: true
+          type: string
+        - name: smallImageUrl
+          in: formData
+          description: small image url string of the book
+          required: true
+          type: string
+        - name: publicationYear
+          in: formData
+          description: publication year string of the book
+          required: true
+          type: string
+        - name: averageRating
+          in: formData
+          description: average rating of the book
+          required: true
+          type: number
+        - name: status
+          in: formData
+          description: status of the book
+          required: true
+          type: number
+        - name: publisher
+          in: formData
+          description: publisher of the book
+          required: true
+          type: string
+        - name: escription
+          in: formData
+          description: description of the book
+          required: true
+          type: string
+        - name: categories
+          in: formData
+          description: categories of the book
+          required: true
+          type: string
+        - name: language
+          in: formData
+          description: language of the book
+          required: true
+          type: string
+        - name: source
+          in: formData
+          description: source of the book
+          required: true
+          type: string
+        - name: pageCount
+          in: formData
+          description: pageCount of the book
+          required: true
+          type: number
+
+      responses:
+        200:
+          description: successful operation
+          schema:
+            $ref: "#/definitions/GetBookResponse"
+        500:
+          description: internal server error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+
+  /book/{isbn}:
+    get:
+      tags:
+        - Book
+      summary: Gets the detail of a single book
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: isbn
+          in: path
+          description: ID of book to return
+          required: true
+          type: string
+      responses:
+        200:
+          description: successful operation
+          schema:
+            $ref: "#/definitions/GetBookResponse"
+        500:
+          description: internal server error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+        400:
+          description: bad request
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+        404:
+          description: book not found
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+
+definitions:
+  HealthcheckResponse:
+    type: string
+    example: Pong
+  GetBookResponse:
+    type: object
+    properties:
+      isbn:
+        type: string
+      title:
+        type: string
+      author:
+        type: string
+      smallImageUrl:
+        type: string
+      imageUrl:
+        type: string
+      publisher:
+        type: string
+      description:
+        type: string
+      pageCount:
+        type: integer
+        format: int64
+      categories:
+        type: string
+      language:
+        type: string
+      publicationYear:
+        type: string
+      userID:
+        type: string
+      status:
+        type: integer
+        format: int64
+      source:
+        type: string
+    example:
+      isbn: 9781472223630
+      title: Roses Are Red (Alex Cross, #6)
+      author: James Patterson
+      imageUrl: https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1434737448l/25756904._SX98_.jpg
+      smallImageUrl: https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1434737448l/25756904._SX98_.jpg
+      publisher: headline
+      description: Alex Cross series book 6
+      pageCount: 435
+      categories: crime, thriller
+      publicationYear: 9999
+      status: 1
+      source: goodreads
+
+  ErrorResponse:
+    type: object
+    properties:
+      requestID:
+        type: string
+      message:
+        type: string
+    example:
+      - requestID: 827222ab-8e3c-44cf-b524-b4acc97d7016
+        message: "detailed error message"
+  ListBookResponse:
+    type: array
+    items:
+      type: object
+      properties:
+        isbn:
+          type: string
+        title:
+          type: string
+        author:
+          type: string
+        smallImageUrl:
+          type: string
+        imageUrl:
+          type: string
+        publisher:
+          type: string
+        description:
+          type: string
+        pageCount:
+          type: integer
+          format: int64
+        categories:
+          type: string
+        language:
+          type: string
+        publicationYear:
+          type: string
+        userID:
+          type: string
+        status:
+          type: integer
+          format: int64
+        source:
+          type: string
+    example:
+      - isbn: 9781472223630
+        title: Roses Are Red (Alex Cross, #6)
+        author: James Patterson
+        imageUrl: https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1434737448l/25756904._SX98_.jpg
+        publisher: headline
+        description: Alex Cross series book 6
+        pageCount: 435
+        categories: crime, thriller
+        publicationYear: 9999
+        status: 1
+        source: goodreads
+      - isbn: 9780751562774
+        title: The Secrets She Keeps
+        author: Michael Robotham
+        imageUrl: https://s.gr-assets.com/assets/nophoto/book/111x148-bcc042a9c91a29c1d680899eff700a03.png
+        status: 1
+        source: goodreads
+
+externalDocs:
+  description: Find out more about Swagger
+  url: http://swagger.io

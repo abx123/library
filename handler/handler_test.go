@@ -12,7 +12,6 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/stretchr/testify/assert"
 
-	"github.com/abx123/library/constant"
 	"github.com/abx123/library/entities"
 	"github.com/abx123/library/services/mocks"
 )
@@ -51,7 +50,7 @@ func TestGetBook(t *testing.T) {
 		dbSvc := mocks.IdbService{}
 		bSvc := mocks.Ibooks{}
 		h := NewHandler(&dbSvc, &bSvc)
-		dbSvc.On("Get", context.WithValue(context.Background(), constant.ContextKeyRequestID, ""), "9780751562774", "8BeqLfieIiTOkruBBrQ6p8jOTsk2").Return(v.expRes, v.err)
+		dbSvc.On("Get", context.Background(), "9780751562774", "8BeqLfieIiTOkruBBrQ6p8jOTsk2").Return(v.expRes, v.err)
 		req := httptest.NewRequest(http.MethodGet, v.url, nil)
 		w := httptest.NewRecorder()
 		r := echo.New()
@@ -99,7 +98,7 @@ func TestGetNewBook(t *testing.T) {
 		dbSvc := mocks.IdbService{}
 		bSvc := mocks.Ibooks{}
 		h := NewHandler(&dbSvc, &bSvc)
-		bSvc.On("Get", context.WithValue(context.Background(), constant.ContextKeyRequestID, ""), "9780751562774").Return(v.expRes, v.err)
+		bSvc.On("Get", context.Background(), "9780751562774").Return(v.expRes, v.err)
 		req := httptest.NewRequest(http.MethodGet, v.url, nil)
 		w := httptest.NewRecorder()
 		r := echo.New()
@@ -157,7 +156,7 @@ func TestListBook(t *testing.T) {
 		dbSvc := mocks.IdbService{}
 		bSvc := mocks.Ibooks{}
 		h := NewHandler(&dbSvc, &bSvc)
-		dbSvc.On("List", context.WithValue(context.Background(), constant.ContextKeyRequestID, ""), int64(10), int64(0), "8BeqLfieIiTOkruBBrQ6p8jOTsk2").Return(v.expRes, v.err)
+		dbSvc.On("List", context.Background(), int64(10), int64(0), "8BeqLfieIiTOkruBBrQ6p8jOTsk2").Return(v.expRes, v.err)
 		req := httptest.NewRequest(http.MethodGet, v.url, nil)
 		w := httptest.NewRecorder()
 		r := echo.New()
@@ -244,7 +243,7 @@ func TestUpsert(t *testing.T) {
 		dbSvc := mocks.IdbService{}
 		bSvc := mocks.Ibooks{}
 		h := NewHandler(&dbSvc, &bSvc)
-		dbSvc.On("Upsert", context.WithValue(context.Background(), constant.ContextKeyRequestID, ""), "9780751562774", "The Secrets She Keeps", "Michael Robotham", "https://s.gr-assets.com/assets/nophoto/book/111x148-bcc042a9c91a29c1d680899eff700a03.png", "", "", "8BeqLfieIiTOkruBBrQ6p8jOTsk2", "", "", "", "goodreads", int64(0), int64(1), int64(0)).Return(v.expRes, v.err)
+		dbSvc.On("Upsert", context.Background(), "9780751562774", "The Secrets She Keeps", "Michael Robotham", "https://s.gr-assets.com/assets/nophoto/book/111x148-bcc042a9c91a29c1d680899eff700a03.png", "", "", "8BeqLfieIiTOkruBBrQ6p8jOTsk2", "", "", "", "goodreads", int64(0), int64(1), int64(0)).Return(v.expRes, v.err)
 		req := httptest.NewRequest(http.MethodPost, "http://localhost:1323/8BeqLfieIiTOkruBBrQ6p8jOTsk2/book", strings.NewReader(v.form.Encode()))
 		req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 		w := httptest.NewRecorder()

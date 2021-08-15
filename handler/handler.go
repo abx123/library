@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"context"
 	"net/http"
 	"strconv"
 
@@ -32,11 +31,13 @@ type postUpsertBookRequest struct {
 	PageCount       int64   `json:"pageCount" form:"pageCount"`
 }
 
+// Hanlder defines a handler struct
 type Handler struct {
 	bookSvc services.Ibooks
 	dbSvc   services.IdbService
 }
 
+// New Handler returns a new instance of Handler
 func NewHandler(dbSvc services.IdbService, bSvc services.Ibooks) *Handler {
 	return &Handler{
 		dbSvc:   dbSvc,
@@ -44,13 +45,13 @@ func NewHandler(dbSvc services.IdbService, bSvc services.Ibooks) *Handler {
 	}
 }
 
+// GetBook resolves GET /{userID}/book/{isbn}, retreives details of a book from database
 func (h *Handler) GetBook(c echo.Context) (err error) {
 	reqID := c.Response().Header().Get(echo.HeaderXRequestID)
-	ctx := context.WithValue(c.Request().Context(), constant.ContextKeyRequestID, c.Response().Header().Get(echo.HeaderXRequestID))
 	isbn := c.Param("isbn")
 	userId := c.Param("userId")
 
-	data, err := h.dbSvc.Get(ctx, isbn, userId)
+	data, err := h.dbSvc.Get(c.Request().Context(), isbn, userId)
 	if err != nil {
 		zap.L().Error(err.Error(), zap.Error(err))
 		return c.JSON(http.StatusInternalServerError, presenter.ErrResp(reqID, err))
@@ -72,10 +73,9 @@ func (h *Handler) GetBook(c echo.Context) (err error) {
 	})
 }
 
-// GetBook handles GET /book/:isbn"
+// GetNewBook resolves GET /book/:isbn, retreives details of a book from providers.
 func (h *Handler) GetNewBook(c echo.Context) (err error) {
 	reqID := c.Response().Header().Get(echo.HeaderXRequestID)
-	ctx := context.WithValue(c.Request().Context(), constant.ContextKeyRequestID, c.Response().Header().Get(echo.HeaderXRequestID))
 	isbn := c.Param("isbn")
 	if _, err := strconv.ParseInt(isbn, 10, 64); err != nil {
 		// Invalid request parameter
@@ -83,7 +83,7 @@ func (h *Handler) GetNewBook(c echo.Context) (err error) {
 		return c.JSON(http.StatusBadRequest, presenter.ErrResp(reqID, err))
 	}
 
-	data, err := h.bookSvc.Get(ctx, isbn)
+	data, err := h.bookSvc.Get(c.Request().Context(), isbn)
 	if err != nil {
 		zap.L().Error(err.Error(), zap.Error(err))
 		return c.JSON(http.StatusInternalServerError, presenter.ErrResp(reqID, err))
@@ -104,9 +104,9 @@ func (h *Handler) GetNewBook(c echo.Context) (err error) {
 	})
 }
 
+// ListBook resolves GET /{userID}/books, retreives the list of books related to the userID
 func (h *Handler) ListBook(c echo.Context) (err error) {
 	reqID := c.Response().Header().Get(echo.HeaderXRequestID)
-	ctx := context.WithValue(c.Request().Context(), constant.ContextKeyRequestID, c.Response().Header().Get(echo.HeaderXRequestID))
 	limit, offset, err := getLimitAndOffest(c)
 	userId := c.Param("userId")
 	if err != nil {
@@ -114,7 +114,7 @@ func (h *Handler) ListBook(c echo.Context) (err error) {
 		return c.JSON(http.StatusBadRequest, presenter.ErrResp(reqID, err))
 	}
 
-	data, err := h.dbSvc.List(ctx, limit, offset, userId)
+	data, err := h.dbSvc.List(c.Request().Context(), limit, offset, userId)
 	if err != nil {
 		// Error while querying database
 		return c.JSON(http.StatusInternalServerError, presenter.ErrResp(reqID, err))
@@ -134,12 +134,12 @@ func (h *Handler) ListBook(c echo.Context) (err error) {
 	return c.JSON(http.StatusOK, books)
 }
 
+// UpsertBook resolves POST /{userID}/book, updates a database book record if record is found, creates a new record if no record found.
 func (h *Handler) UpsertBook(c echo.Context) (err error) {
 	r := &postUpsertBookRequest{}
 	userId := c.Param("userId")
 	// isbn := c.Param("isbn")
 	reqID := c.Response().Header().Get(echo.HeaderXRequestID)
-	ctx := context.WithValue(c.Request().Context(), constant.ContextKeyRequestID, c.Response().Header().Get(echo.HeaderXRequestID))
 	if err = c.Bind(r); err != nil {
 		// Invalid request parameter
 		zap.L().Error(constant.ErrInvalidRequest.Error(), zap.Error(err))
@@ -150,7 +150,7 @@ func (h *Handler) UpsertBook(c echo.Context) (err error) {
 		zap.L().Error(constant.ErrInvalidRequest.Error(), zap.Error(err))
 		return c.JSON(http.StatusBadRequest, presenter.ErrResp(reqID, err))
 	}
-	book, err := h.dbSvc.Upsert(ctx, r.ISBN, r.Title, r.Author, r.ImageURL, r.SmallImageURL, r.Publisher, userId, r.Description, r.Categories, r.Language, r.Source, r.PublicationYear, r.Status, r.PageCount)
+	book, err := h.dbSvc.Upsert(c.Request().Context(), r.ISBN, r.Title, r.Author, r.ImageURL, r.SmallImageURL, r.Publisher, userId, r.Description, r.Categories, r.Language, r.Source, r.PublicationYear, r.Status, r.PageCount)
 
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, presenter.ErrResp(reqID, err))
@@ -166,7 +166,8 @@ func (h *Handler) UpsertBook(c echo.Context) (err error) {
 	})
 }
 
-func (con *Handler) Ping(c echo.Context) (err error) {
+// Ping resolves GET /ping, returns "Pong", used for healthcheck.
+func (h *Handler) Ping(c echo.Context) (err error) {
 	// Server is up and running, return OK!
 	return c.String(http.StatusOK, "Pong")
 }

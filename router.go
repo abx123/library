@@ -19,6 +19,7 @@ type router struct {
 	conn *sqlx.DB
 }
 
+// NewRouter creates a new router instance
 func NewRouter(port int, conn *sqlx.DB) *router {
 	return &router{
 		port: port,

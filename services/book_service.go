@@ -21,11 +21,13 @@ const (
 	methodGet = "GET"
 )
 
+// BookService defines a book service
 type BookService struct {
 	isbn   goisbn.Queryer
 	client httpClient
 }
 
+// NewBookService creates a new instance of BookService
 func NewBookService(gi goisbn.Queryer) *BookService {
 	return &BookService{
 		isbn:   gi,
@@ -78,6 +80,7 @@ func (svc *BookService) crawl(ctx context.Context, isbn string) (*entities.Book,
 	return book, nil
 }
 
+// Get returns details of a book from providers
 func (svc *BookService) Get(ctx context.Context, isbn string) (*entities.Book, error) {
 	b, err := svc.isbn.Get(isbn)
 	if err != nil {

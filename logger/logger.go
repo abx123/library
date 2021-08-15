@@ -6,6 +6,7 @@ import (
 	"go.uber.org/zap"
 )
 
+// NewLogger returns a new zap logger
 func NewLogger() *zap.Logger {
 	const (
 		logPath = "./logs/library.log"

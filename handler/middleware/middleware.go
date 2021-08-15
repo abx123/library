@@ -24,6 +24,7 @@ type bodyDumpResponseWriter struct {
 	http.ResponseWriter
 }
 
+// Middleware returns a new middleware function
 func Middleware() echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) (err error) {

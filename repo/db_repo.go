@@ -13,17 +13,19 @@ import (
 	"github.com/abx123/library/entities"
 )
 
+// DBRepo defines a DBRepo object
 type DBRepo struct {
 	db *sqlx.DB
 }
 
+//NewDBRepo creates a new instance of DBRepo object
 func NewDbRepo(db *sqlx.DB) *DBRepo {
 	return &DBRepo{
 		db: db,
 	}
 }
 
-// GetTable returns detail of a single table.
+// Upsert updates the record if a record is found, inserts a new record if no record is found.
 func (r *DBRepo) Upsert(ctx context.Context, book *entities.Book) (*entities.Book, error) {
 
 	b, err := r.Get(ctx, book)
@@ -48,6 +50,7 @@ func (r *DBRepo) Upsert(ctx context.Context, book *entities.Book) (*entities.Boo
 	return b, nil
 }
 
+// Get get searches the database for a record match
 func (r *DBRepo) Get(ctx context.Context, book *entities.Book) (*entities.Book, error) {
 	b := &entities.Book{}
 	err := r.db.Get(b, "SELECT * FROM `books` WHERE isbn = ? AND userId = ?", book.ISBN, book.UserID)
@@ -98,6 +101,7 @@ func (r *DBRepo) update(ctx context.Context, book *entities.Book) (*entities.Boo
 	return book, nil
 }
 
+// List returns list of records that matches the search criteria
 func (r *DBRepo) List(ctx context.Context, limit, offset int64, userId string) ([]*entities.Book, error) {
 	books := []*entities.Book{}
 	err := r.db.Select(&books, "SELECT * FROM `books` WHERE userId=?  LIMIT ? OFFSET ?", userId, limit, offset)
