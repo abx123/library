@@ -122,12 +122,20 @@ func (h *Handler) ListBook(c echo.Context) (err error) {
 	books := []*presenter.Book{}
 	for _, d := range data {
 		books = append(books, &presenter.Book{
-			ISBN:     d.ISBN,
-			Title:    d.Title,
-			Author:   d.Authors,
-			ImageURL: d.ImageURL,
-			UserID:   d.UserID,
-			Status:   d.Status,
+			ISBN:            d.ISBN,
+			Title:           d.Title,
+			Author:          d.Authors,
+			ImageURL:        d.ImageURL,
+			SmallImageURL:   d.SmallImageURL,
+			Publisher:       d.Publisher,
+			Description:     d.Description,
+			PageCount:       d.PageCount,
+			Categories:      d.Categories,
+			Language:        d.Language,
+			PublicationYear: d.PublicationYear,
+			UserID:          d.UserID,
+			Status:          d.Status,
+			Source:          d.Source,
 		})
 	}
 
@@ -157,12 +165,20 @@ func (h *Handler) UpsertBook(c echo.Context) (err error) {
 	}
 
 	return c.JSON(http.StatusOK, &presenter.Book{
-		ISBN:     book.ISBN,
-		Title:    book.Title,
-		Author:   book.Authors,
-		ImageURL: book.ImageURL,
-		UserID:   book.UserID,
-		Status:   book.Status,
+		ISBN:            book.ISBN,
+		Title:           book.Title,
+		Author:          book.Authors,
+		ImageURL:        book.ImageURL,
+		SmallImageURL:   book.SmallImageURL,
+		Publisher:       book.Publisher,
+		Description:     book.Description,
+		PageCount:       book.PageCount,
+		Categories:      book.Categories,
+		Language:        book.Language,
+		PublicationYear: book.PublicationYear,
+		UserID:          book.UserID,
+		Status:          book.Status,
+		Source:          book.Source,
 	})
 }
 

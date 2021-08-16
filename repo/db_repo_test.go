@@ -133,7 +133,7 @@ func TestInsert(t *testing.T) {
 }
 
 func TestUpdate(t *testing.T) {
-	query := regexp.QuoteMeta("UPDATE `books` SET isbn=?, title=?, authors=?, imageUrl=?, smallImageUrl=?, publicationYear=?, userId=?, status=?, description=?, pageCount=?, categories=?, language=?, source=? WHERE isbn = ? AND userId = ?")
+	query := regexp.QuoteMeta("UPDATE `books` SET isbn=?, title=?, authors=?, imageUrl=?, smallImageUrl=?, publicationYear=?, userId=?, status=?, description=?, pageCount=?, categories=?, language=?, source=?, publisher=? WHERE isbn = ? AND userId = ?")
 	type testCase struct {
 		name            string
 		desc            string
@@ -252,7 +252,7 @@ func TestList(t *testing.T) {
 func TestUpsert(t *testing.T) {
 	getQuery := regexp.QuoteMeta("SELECT * FROM `books` WHERE isbn = ? AND userId = ?")
 	getRows := sqlxmock.NewRows([]string{"id", "isbn", "title", "authors", "imageUrl", "smallImageUrl", "publicationYear", "publisher", "userId", "status", "description", "pageCount", "categories", "language", "source"}).AddRow(1, "9780751562774", "The Secrets She Keeps", "Michael Robotham", "https://s.gr-assets.com/assets/nophoto/book/111x148-bcc042a9c91a29c1d680899eff700a03.png", "", 0, "BB Publishing House", "8BeqLfieIiTOkruBBrQ6p8jOTsk2", 1, "", 0, "", "", "goodreads")
-	updateQuery := regexp.QuoteMeta("UPDATE `books` SET isbn=?, title=?, authors=?, imageUrl=?, smallImageUrl=?, publicationYear=?, userId=?, status=?, description=?, pageCount=?, categories=?, language=?, source=? WHERE isbn = ? AND userId = ?")
+	updateQuery := regexp.QuoteMeta("UPDATE `books` SET isbn=?, title=?, authors=?, imageUrl=?, smallImageUrl=?, publicationYear=?, userId=?, status=?, description=?, pageCount=?, categories=?, language=?, source=?, publisher=? WHERE isbn = ? AND userId = ?")
 	insertQuery := regexp.QuoteMeta("INSERT INTO `books` (isbn, title, authors, imageUrl, smallImageUrl, publicationYear, publisher, userId, status, description, pageCount, categories, language, source) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
 	type testCase struct {
 		name      string

@@ -27,7 +27,6 @@ func NewDbRepo(db *sqlx.DB) *DBRepo {
 
 // Upsert updates the record if a record is found, inserts a new record if no record is found.
 func (r *DBRepo) Upsert(ctx context.Context, book *entities.Book) (*entities.Book, error) {
-
 	b, err := r.Get(ctx, book)
 	if err != nil {
 		if err == constant.ErrBookNotFound {
@@ -86,7 +85,7 @@ func (r *DBRepo) insert(ctx context.Context, book *entities.Book) (*entities.Boo
 
 func (r *DBRepo) update(ctx context.Context, book *entities.Book) (*entities.Book, error) {
 	// Execute Statement
-	res, err := r.db.Exec("UPDATE `books` SET isbn=?, title=?, authors=?, imageUrl=?, smallImageUrl=?, publicationYear=?, userId=?, status=?, description=?, pageCount=?, categories=?, language=?, source=? WHERE isbn = ? AND userId = ?", book.ISBN, book.Title, book.Authors, book.ImageURL, book.SmallImageURL, book.PublicationYear, book.UserID, book.Status, book.Description, book.PageCount, book.Categories, book.Language, book.Source, book.ISBN, book.UserID)
+	res, err := r.db.Exec("UPDATE `books` SET isbn=?, title=?, authors=?, imageUrl=?, smallImageUrl=?, publicationYear=?, userId=?, status=?, description=?, pageCount=?, categories=?, language=?, source=?, publisher=? WHERE isbn = ? AND userId = ?", book.ISBN, book.Title, book.Authors, book.ImageURL, book.SmallImageURL, book.PublicationYear, book.UserID, book.Status, book.Description, book.PageCount, book.Categories, book.Language, book.Source, book.Publisher, book.ISBN, book.UserID)
 	if err != nil {
 		zap.L().Error(constant.ErrDBErr.Error(), zap.Error(err))
 		// Error paring statement result into struct
